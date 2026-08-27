@@ -2687,6 +2687,8 @@
  },
  "Tajikistan": {
   "code": "tj",
+  "currency": "TJS",
+  "currency_name": "Tajikistani Somoni",
   "currency_fraction": "Diram",
   "currency_fraction_units": 100,
   "currency_symbol": "\u0405\u041c",
