@@ -67,6 +67,16 @@ def get_context(context):
 			"csrf_token": csrf_token,
 			"google_analytics_id": frappe.conf.get("google_analytics_id"),
 			"google_analytics_anonymize_ip": frappe.conf.get("google_analytics_anonymize_ip"),
+			"splash_image": (
+				frappe.get_website_settings("splash_image")
+				or (frappe.get_hooks("splash_image", app_name="erpnext") or [None])[0]
+				or "/assets/erpnext/images/radolfa-logo.png"
+			),
+			"favicon": (
+				frappe.get_website_settings("favicon")
+				or (frappe.get_hooks("favicon", app_name="erpnext") or [None])[0]
+				or "/assets/erpnext/images/radolfa-logo.png"
+			),
 			"app_name": (
 				frappe.get_website_settings("app_name") or frappe.get_system_settings("app_name") or "Frappe"
 			),

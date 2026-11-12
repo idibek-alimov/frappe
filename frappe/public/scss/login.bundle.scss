@@ -207,7 +207,9 @@ body {
 	font-weight: 600;
 
 	img {
-		max-height: 42px;
+		max-height: 64px;
+		width: auto;
+		object-fit: contain;
 	}
 
 	h4 {

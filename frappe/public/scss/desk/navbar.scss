@@ -5,6 +5,9 @@
 	padding: 0;
 	.navbar-brand {
 		margin-right: 0;
+		display: inline-flex;
+		align-items: center;
+		text-decoration: none;
 	}
 	.navbar-nav {
 		.dropdown-item {
@@ -32,10 +35,50 @@
 	}
 }
 
+.navbar-brand.navbar-home,
 .navbar-home {
+	display: inline-flex !important;
+	align-items: center !important;
+	vertical-align: middle !important;
+	height: 100% !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	gap: 12px !important;
+	text-decoration: none !important;
+
+	img.app-logo,
+	.app-logo,
 	img {
-		max-height: 28px;
-		width: auto;
+		height: 40px !important;
+		max-height: 40px !important;
+		width: 40px !important;
+		max-width: 40px !important;
+		min-width: 40px !important;
+		min-height: 40px !important;
+		object-fit: contain !important;
+		vertical-align: middle !important;
+		display: block !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
+	.app-title {
+		font-weight: 900 !important;
+		font-size: 24px !important;
+		color: var(--text-color) !important;
+		letter-spacing: 0.02em !important;
+		line-height: 1 !important;
+		white-space: nowrap !important;
+		user-select: none !important;
+		display: inline-flex !important;
+		align-items: center !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
+	&:hover,
+	&:focus {
+		text-decoration: none !important;
 	}
 }
 
