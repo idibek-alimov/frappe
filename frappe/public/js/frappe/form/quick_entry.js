@@ -44,6 +44,16 @@ frappe.ui.form.QuickEntryForm = class QuickEntryForm {
 				} else {
 					// no quick entry, open full form
 					frappe.quick_entry = null;
+					if (this.after_insert) {
+						frappe.route_options = frappe.route_options || {};
+						frappe.route_options.after_save = (frm) => {
+							this.after_insert(frm.doc || frm);
+						};
+						frappe.route_hooks = frappe.route_hooks || {};
+						frappe.route_hooks.after_save = (frm) => {
+							this.after_insert(frm.doc || frm);
+						};
+					}
 					frappe
 						.set_route("Form", this.doctype, this.doc.name)
 						.then(() => resolve(this));
@@ -214,7 +224,10 @@ frappe.ui.form.QuickEntryForm = class QuickEntryForm {
 					}
 				},
 				error: function () {
-					if (!me.skip_redirect_on_error) {
+					if (
+						!me.skip_redirect_on_error &&
+						(!frappe.session?.user || frappe.session.user === "Administrator")
+					) {
 						me.open_doc(true);
 					}
 				},
@@ -255,6 +268,7 @@ frappe.ui.form.QuickEntryForm = class QuickEntryForm {
 	}
 
 	open_form_if_not_list() {
+		if (frappe.session?.user && frappe.session.user !== "Administrator") return;
 		let route = frappe.get_route();
 		let doc = this.dialog.doc;
 		if (route && !(route[0] === "List" && route[1] === doc.doctype)) {
@@ -279,7 +293,11 @@ frappe.ui.form.QuickEntryForm = class QuickEntryForm {
 		if (set_hooks && this.after_insert) {
 			frappe.route_options = frappe.route_options || {};
 			frappe.route_options.after_save = (frm) => {
-				this.after_insert(frm);
+				this.after_insert(frm.doc || frm);
+			};
+			frappe.route_hooks = frappe.route_hooks || {};
+			frappe.route_hooks.after_save = (frm) => {
+				this.after_insert(frm.doc || frm);
 			};
 		}
 		this.doc.__run_link_triggers = false;
@@ -287,6 +305,7 @@ frappe.ui.form.QuickEntryForm = class QuickEntryForm {
 	}
 
 	render_edit_in_full_page_link() {
+		if (frappe.session?.user && frappe.session.user !== "Administrator") return;
 		var me = this;
 		this.dialog.add_custom_action(__("Edit Full Form"), () => me.open_doc(true));
 	}

@@ -369,7 +369,12 @@ frappe.new_doc = function (doctype, opts, init_callback) {
 		return;
 	}
 	return new Promise((resolve) => {
+		let after_insert = null;
 		if (opts && $.isPlainObject(opts)) {
+			if (typeof opts.after_insert === "function") {
+				after_insert = opts.after_insert;
+				delete opts.after_insert;
+			}
 			frappe.route_options = opts;
 		}
 		frappe.model.with_doctype(doctype, function () {
@@ -377,7 +382,7 @@ frappe.new_doc = function (doctype, opts, init_callback) {
 				frappe.set_route(frappe.create_routes[doctype]).then(() => resolve());
 			} else {
 				frappe.ui.form
-					.make_quick_entry(doctype, null, init_callback)
+					.make_quick_entry(doctype, after_insert, init_callback)
 					.then(() => resolve());
 			}
 		});

@@ -769,9 +769,10 @@ frappe.ui.form.Form = class FrappeForm {
 
 				me.script_manager.trigger("after_save");
 
-				if (frappe.route_hooks.after_save) {
-					let route_callback = frappe.route_hooks.after_save;
+				let route_callback = frappe.route_hooks.after_save || frappe.route_options?.after_save;
+				if (route_callback) {
 					delete frappe.route_hooks.after_save;
+					if (frappe.route_options) delete frappe.route_options.after_save;
 
 					route_callback(me);
 				}
