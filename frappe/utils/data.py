@@ -309,6 +309,41 @@ def time_diff_in_hours(string_ed_date, string_st_date):
 
 def now_datetime():
 	dt = convert_utc_to_system_timezone(datetime.datetime.now(pytz.UTC))
+	offset = getattr(frappe.local, "simulated_time_offset", None) if hasattr(frappe, "local") else None
+	if offset is None:
+		try:
+			cached = frappe.cache().get_value("simulated_time_offset_seconds")
+			if cached is not None:
+				offset = int(cached)
+			else:
+				# Cache miss (after Redis/Docker restart or clear-cache).
+				# Fallback to persistent disk file or database so business days and records stay consistent.
+				offset = 0
+				if hasattr(frappe, "get_site_path"):
+					try:
+						import os
+						sp = frappe.get_site_path("simulated_time_offset.txt")
+						if os.path.exists(sp):
+							with open(sp, "r", encoding="utf-8") as f:
+								val = f.read().strip()
+								if val:
+									offset = int(val)
+					except Exception:
+						pass
+				if offset == 0 and hasattr(frappe, "db") and frappe.db and getattr(frappe.db, "_conn", None):
+					try:
+						val = frappe.db.get_global("simulated_time_offset_seconds")
+						if val:
+							offset = int(val)
+					except Exception:
+						pass
+				frappe.cache().set_value("simulated_time_offset_seconds", offset)
+		except Exception:
+			offset = 0
+		if hasattr(frappe, "local"):
+			frappe.local.simulated_time_offset = offset
+	if offset:
+		dt += datetime.timedelta(seconds=int(offset))
 	return dt.replace(tzinfo=None)
 
 
